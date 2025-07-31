@@ -4,69 +4,185 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact App</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7fc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .father {
+            width: 100%;
+            max-width: 600px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .input input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .input input:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        .input input[type="button"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .input input[type="button"]:hover {
+            background-color: #45a049;
+        }
+
+        .output {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .output p {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .output button {
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            margin-right: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .output button:hover {
+            background-color: #e64a19;
+        }
+
+        .output button:nth-child(2) {
+            background-color: #2196F3;
+        }
+
+        .output button:nth-child(2):hover {
+            background-color: #1976d2;
+        }
+
+        @media (max-width: 480px) {
+            .father {
+                padding: 20px;
+            }
+
+            .input input {
+                font-size: 14px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>ADD Contact</h1>
-
     <div class="father">
+        <h1>ADD Contact</h1>
         <div class="input">
-            <input type="text" id="smiya" placeholder="name"><br>
-            <input type="email" id="jmail" placeholder="email"><br>
+            <input type="text" id="smiya" placeholder="Name"><br>
+            <input type="email" id="jmail" placeholder="Email"><br>
             <input type="button" value="Add" id="add" onclick="addContact()"><br>
         </div>
 
         <h1>All Contacts</h1>
 
-        <div class="output"  id="afichage">
-            
-        </div>
+        <div class="output" id="afichage"></div>
     </div>
 
     <script>
-        let t =JSON.parse(localStorage.getItem('contacts')) || [];
-        function addContact(){
-            name = document.getElementById('smiya').value;
-            mail = document.getElementById('jmail').value ;
-            
+        let t = JSON.parse(localStorage.getItem('contacts')) || [];
+
+        function addContact() {
+            let name = document.getElementById('smiya').value;
+            let mail = document.getElementById('jmail').value;
+
             if (name && mail) {
                 t.push({ name, mail });
                 affichier();
-            }
-            else {
+                save();
+            } else {
                 alert('Please fill in all fields');
             }
-
         }
-        function affichier(){
-            let contact = document.getElementById('afichage')
+
+        function affichier() {
+            let contact = document.getElementById('afichage');
             contact.innerHTML = '';
 
-
-            t.forEach((element,index) => {
-                contact.innerHTML +=`
-                    <p>${element.name} <br>
-                        ${element.mail}<br>    
-                    <button onclick = "update(${index})" value="update">update</button>
-                    <button onclick = "move(${index})" value = "delete">delete</button>
+            t.forEach((element, index) => {
+                contact.innerHTML += `
+                    <p>
+                        <strong>${element.name}</strong><br>
+                        ${element.mail}<br>
+                        <button onclick="update(${index})">Update</button>
+                        <button onclick="move(${index})">Delete</button>
                     </p>
-                `
+                `;
             });
         }
+
         function save() {
-            localStorage.setItem('contacts',JSON.stringify(t));
-        }  
+            localStorage.setItem('contacts', JSON.stringify(t));
+        }
+
         window.onload = function() {
             affichier();
         }
-        function move(index){
-            t.splice(index,1);
+
+        function move(index) {
+            t.splice(index, 1);
             affichier();
             save();
         }
-        function update(index){
+
+        function update(index) {
             let name = prompt('Put A New Name To Change :' + t[index].name);
-            let mail = prompt('put A New Email To Change :' + t[index].mail);
-            if (name && mail){
+            let mail = prompt('Put A New Email To Change :' + t[index].mail);
+            if (name && mail) {
                 t[index].name = name;
                 t[index].mail = mail;
                 affichier();
